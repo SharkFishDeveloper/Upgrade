@@ -52,10 +52,6 @@ const handler = NextAuth({
             user.id = newUser._id.toString();
           }
         } else {
-          if(existingUser.signedIn===true){
-            throw new Error("User is already signed in")
-            return false;
-          }
           user.id = existingUser._id.toString();
         }
       } catch (error) {

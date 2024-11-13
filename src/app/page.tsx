@@ -1,7 +1,8 @@
 "use client"
-import { signIn, signOut } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import Userprofile from "./components/Userprofile";
 
 export default function Home() {
   const session = useSession();
@@ -10,8 +11,7 @@ export default function Home() {
       
       {session.data ? (
         <div>
-          Signed In 
-          <button onClick={()=>signOut()}>Sign out</button>
+          <Userprofile/>
         </div>
       ) : (
         <div className="text-center space-y-6 p-8 border border-gray-700 rounded-md max-w-md bg-gray-800">
