@@ -14,8 +14,6 @@ export default async function ProfileDetails({ id }: { id: string }) {
       return { message: "User not found", status: 404 };
     }
 
-    console.log("DETAILS", user);
-    
     const data = JSON.parse(JSON.stringify(user))
     return { data, status: 200 };
     

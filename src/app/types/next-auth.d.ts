@@ -1,9 +1,25 @@
-import "next-auth"
+import "next-auth";
 
-declare module "next-auth"{
-    interface Session{
-        user:{
-            id?:string
-        }
+declare module "next-auth" {
+    interface Profile {
+        health: number;
+        coins: number;
+        score: number;
+        level: number;
+        strengths: string;
+        weakness: string;
+        daily_goals: string[];
+        long_Term_Objective: string[];
+        skill_area: string[];
+        goals: string[];
+    }
+
+    interface Session {
+        user: {
+            id: string;
+            email: string;
+            name: string;
+            profile: Profile;  // Define profile with the Profile type
+        };
     }
 }

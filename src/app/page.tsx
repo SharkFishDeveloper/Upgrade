@@ -3,9 +3,15 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import Userprofile from "./components/Userprofile";
+import { useEffect } from "react";
 
 export default function Home() {
   const session = useSession();
+  useEffect(()=>{
+    if(session.data && session.data.user){
+      localStorage.setItem("user",JSON.stringify(session.data.user))
+    }
+  },[session.data])
   return (
     <div className="flex min-h-screen items-center justify-center bg-white text-black">
       

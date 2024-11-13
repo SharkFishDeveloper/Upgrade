@@ -1,30 +1,30 @@
 "use client"
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useState } from "react";
-import ProfileDetails from "../backend/user_profile";
+import Update from "./Update";
+import HeroSection from "./HeroSection";
 
 const UserProfile = () => {
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
-  const session = useSession();
+  const [update,setUpdate] = useState(false);
+  
   const handleSignOut = () => {
     signOut()
   };
 
 
-  const handleClick =async (id:string)=>{
-    console.log("CONOSLE",await ProfileDetails({id}));
-
-  }
-
   return (
     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold mb-4">User Profile</h2>
+      {!update && <HeroSection/>}
       <div className="space-y-4">
         <button 
-          onClick={()=> session.data?.user.id && handleClick(session.data?.user.id)}
+          onClick={()=> setUpdate(!update)}
           className="w-full py-2 px-4 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
-          Edit Goals
+          {update ? <p>Go back</p> : (<p>Edit goals</p>)}
         </button>
+
+        {update && (<Update/>)}
         
         <button
           onClick={() => setIsSignOutModalOpen(true)}
@@ -41,14 +41,12 @@ const UserProfile = () => {
             <div className="space-x-4">
               <button
                 onClick={handleSignOut}
-                className="py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600"
-              >
+                className="py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600">
                 Yes, Sign Out
               </button>
               <button
                 onClick={() => setIsSignOutModalOpen(false)}
-                className="py-2 px-4 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-              >
+                className="py-2 px-4 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
                 Cancel
               </button>
             </div>

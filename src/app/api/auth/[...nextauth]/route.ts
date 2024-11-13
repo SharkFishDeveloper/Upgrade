@@ -2,20 +2,19 @@
 import NextAuth from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import User from "../../../../modals/modal"
+import User from "../../../../modals/modal";
 import { dbConnect } from "../../../../../lib/mongodb";
 
-
 const connectToDatabase = async () => {
-    await dbConnect();
-  };
+  await dbConnect();
+};
 
 const handler = NextAuth({
   providers: [
     GoogleProvider({
-        clientId: process.env.GOOGLE_ID || "",
-        clientSecret: process.env.GOOGLE_SECRET || "",
-      }),
+      clientId: process.env.GOOGLE_ID || "",
+      clientSecret: process.env.GOOGLE_SECRET || "",
+    }),
     GitHubProvider({
       clientId: process.env.GITHUB_ID || "",
       clientSecret: process.env.GITHUB_SECRET || "",
@@ -29,7 +28,7 @@ const handler = NextAuth({
         const userEmail = user.email as string;
         const userName = user.name as string;
 
-        const existingUser = await User.findOne({ email: userEmail });
+        let existingUser = await User.findOne({ email: userEmail });
 
         if (!existingUser) {
           if (userEmail && userName) {
@@ -50,6 +49,7 @@ const handler = NextAuth({
               },
             });
             user.id = newUser._id.toString();
+            existingUser = newUser;
           }
         } else {
           user.id = existingUser._id.toString();
@@ -61,24 +61,33 @@ const handler = NextAuth({
       return true;
     },
 
-
     jwt: ({ token, user }) => {
       if (user) {
         token.userId = user.id;
       }
       return token;
     },
-    session: ({ session, token }) => {
-      if (session.user) {
-        session.user.id = token.userId as string;
+
+    async session({ session, token }) {
+      if (token.userId) {
+        await connectToDatabase();
+        const user = await User.findById(token.userId);
+        if (user) {
+          session.user = {
+            id: user._id.toString(),
+            email: user.email,
+            name: user.name,
+            profile: user.profile, // Add the profile object here
+          };
+        }
       }
       return session;
     },
   },
   pages: {
-    signIn:"/signin",
-    error: "../../autherror"
+    signIn: "/signin",
+    error: "../../autherror",
   },
 });
 
-export { handler as POST,handler as GET };
+export { handler as POST, handler as GET };
