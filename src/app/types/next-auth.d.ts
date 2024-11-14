@@ -19,7 +19,7 @@ declare module "next-auth" {
             id: string;
             email: string;
             name: string;
-            profile: Profile;  // Define profile with the Profile type
+            profile: Profile;  // Profile is expected to be always available
         };
     }
 }

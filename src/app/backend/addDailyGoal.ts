@@ -2,7 +2,8 @@
 
 import Dailyggoal from "@/util/interface/Dailygoals";
 import { dbConnect } from "../../../lib/mongodb"
-import User from "../../modals/modal"
+import User from "@/modals/modal";
+
  
 export default async function addDailyGoal({newGoal,id}:{newGoal: Dailyggoal,id:string}){
     try {

@@ -10,7 +10,8 @@ const SkillArea = new mongoose.Schema({
     name: { type: String, required: true },
     total_Points: { type: Number, required: true },
     week: { type: Number, default: 0 },
-    level: { type: Number, default: 0 }
+    level: { type: Number, default: 0 },
+    done: { type: Boolean, default: false}
 });
 
 const Task = new mongoose.Schema({
@@ -56,5 +57,4 @@ const UserSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const User =  mongoose.model('User', UserSchema);
-
 export default User;

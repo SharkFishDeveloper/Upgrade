@@ -1,6 +1,6 @@
 "use server"
 import { dbConnect } from "../../../lib/mongodb";
-import User from "../../modals/modal";
+import User from "@/modals/modal";
 
 export default async function updateUserStrengthsWeaknesses({strength,weakness,id}:{strength:string,weakness:string,id:string}){
    try {

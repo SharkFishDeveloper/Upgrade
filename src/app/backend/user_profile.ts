@@ -1,7 +1,7 @@
 "use server"
 
 import { dbConnect } from "../../../lib/mongodb";
-import User from "../../modals/modal";
+import User from "@/modals/modal";
 
 export default async function ProfileDetails({ id }: { id: string }) {
   try {
