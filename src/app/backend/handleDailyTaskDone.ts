@@ -13,7 +13,11 @@ export async function handleDailyTaskDone({userId,goal_score}:{userId:number,goa
             score: {
                 increment: goal_score, // Increment the score by the goal's score
               },
-          }
+            },
+            include:{
+                
+            }
+
         });
         const data = JSON.parse(JSON.stringify(updatedUser))
         return { message: "User updated successfully", status: 200, user: data };

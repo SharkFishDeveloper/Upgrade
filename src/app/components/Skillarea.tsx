@@ -46,15 +46,14 @@ const Skillarea = () => {
       if (!Array.isArray(userFromLocalStorageParsed.profile.skillAreas)) {
         userFromLocalStorageParsed.profile.skillAreas = [];
       }
-  
-      // Add the new skill to the existing skills
+
       const updatedSkills = [...userFromLocalStorageParsed.profile.skillAreas, resp?.data];
   
-      // Update the skillAreas in profile and save to localStorage
+
       userFromLocalStorageParsed.profile.skillAreas = updatedSkills;
       localStorage.setItem("user", JSON.stringify(userFromLocalStorageParsed));
   
-      // Update the state with the updated skills
+
       setSkills(updatedSkills);
     }
   };

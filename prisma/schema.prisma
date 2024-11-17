@@ -50,14 +50,7 @@ model SkillArea {
   profile     Profile  @relation(fields: [profileId], references: [id])
 }
 
-model Task {
-  id        Int    @id @default(autoincrement())
-  name      String
-  done      Boolean @default(false)
-  deadline  String
-  goalId    Int
-  goal      SingleGoal @relation(fields: [goalId], references: [id])
-}
+
 
 model Goal {
   id          Int          @id @default(autoincrement())
@@ -77,6 +70,14 @@ model SingleGoal {
   goal   Goal  @relation(fields: [profileId], references: [id])
 }
 
+model Task {
+  id        Int    @id @default(autoincrement())
+  name      String
+  done      Boolean @default(false)
+  deadline  String
+  goalId    Int
+  goal      SingleGoal @relation(fields: [goalId], references: [id])
+}
 
 model LongTermObjective {
   id        Int    @id @default(autoincrement())

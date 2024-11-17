@@ -1,4 +1,5 @@
 import DailyGoals from "./DailyGoals";
+import Goals from "./Goals";
 import LongTermGoal from "./LongTermGoal";
 import Skillarea from "./Skillarea";
 
@@ -17,6 +18,10 @@ const HeroSection = () => {
 
         <div>
           <LongTermGoal/>
+        </div>
+
+        <div>
+        <Goals/>
         </div>
 
       </div>
