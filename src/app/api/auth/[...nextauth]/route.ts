@@ -5,9 +5,7 @@ import GoogleProvider from "next-auth/providers/google";
 import User from "@/modals/modal";
 import { dbConnect } from "../../../../../lib/mongodb";
 
-const connectToDatabase = async () => {
-  await dbConnect();
-};
+
 
 const handler = NextAuth({
   providers: [
@@ -23,15 +21,14 @@ const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ user }) {
+      await dbConnect();
       try {
-        await connectToDatabase();
         const userEmail = user.email as string;
         const userName = user.name as string;
 
         let existingUser = await User.findOne({ email: userEmail });
-
         if (!existingUser) {
-          if (userEmail && userName) {
+          if (userEmail ) {
             const newUser = await User.create({
               email: userEmail,
               name: userName,
@@ -70,17 +67,17 @@ const handler = NextAuth({
 
     async session({ session, token }) {
    if (token.userId) {
-     await connectToDatabase();
+     await dbConnect()
      const user = await User.findById(token.userId);
-     if (user && user.profile) { 
+     if (user) {  // Check if the profile exists
        session.user = {
          id: user._id.toString(),
          email: user.email,
          name: user.name,
-         //@ts-ignore
-         profile:user.profile ? user.profile : null, // Add the profile object here
+         profile:user.profile 
        };
-     } else {
+     }
+     else {
        session.user.profile = {  // Provide a default profile if none exists
          health: 100,
          coins: 0,

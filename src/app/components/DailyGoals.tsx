@@ -18,8 +18,9 @@ const DailyGoals = () => {
         let goals = localStorage.getItem("user");
         if(goals){
             goals = JSON.parse(goals);
-            if (goals?.profile?.goals) { // Check if goals.profile.goals exists
-                const daily_goals = goals.profile.goals;
+            //@ts-ignore
+            if (goals.profile.goals) { // Check if goals.profile.goals exists
+                const daily_goals = goals?.profile?.goals;
                 setDailygoals(daily_goals);
             } else {
                 console.log("No goals found in profile");

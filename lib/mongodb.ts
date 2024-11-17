@@ -1,4 +1,4 @@
-// lib/mongoose.js
+
 import mongoose from 'mongoose';
 
 let isConnected = false;
