@@ -1,25 +1,54 @@
 import "next-auth";
 
 declare module "next-auth" {
-    interface Profile {
-        health: number;
-        coins: number;
+  interface Profile {
+    health: number;
+    coins: number;
+    score: number;
+    level: number;
+    strengths: string;
+    weakness: string;
+    dailyGoals: { 
+      id: number;
+      name: string;
+      score: number;
+    }[]; // Reflecting the DailyGoal model structure
+    longTermObjectives: { 
+      id: number;
+      name: string;
+      deadline: string;
+      score: number;
+    }[]; // Reflecting the LongTermObjective model structure
+    skillAreas: { 
+      id: number;
+      name: string;
+      totalPoints: number;
+      week: number;
+      level: number;
+    }[]; // Reflecting the SkillArea model structure
+    goals: { 
+      id: number;
+      singleGoal: { 
+        id: number;
+        name: string;
         score: number;
-        level: number;
-        strengths: string;
-        weakness: string;
-        daily_goals: { name: string; score: number; done: boolean }[]; // Change type to match the subdocument structure
-        long_Term_Objective: { name: string; description: string }[]; // Adjust type as needed
-        skill_area: { name: string; description: string }[]; // Adjust type as needed
-        goals: { name: string; description: string }[]; // Adjust type as needed
-    }
+        penalty: number;
+        tasks: { 
+          id: number;
+          name: string;
+          done: boolean;
+          deadline: string;
+        }[];
+      }[];
+    }[]; // Reflecting the Goal and SingleGoal models structure
+  }
 
-    interface Session {
-        user: {
-            id: string;
-            email: string;
-            name: string;
-            profile: Profile; 
-        };
-    }
+  interface Session {
+    user: {
+      id: string;
+      email: string;
+      name: string;
+      profile: Profile;
+    };
+  }
 }

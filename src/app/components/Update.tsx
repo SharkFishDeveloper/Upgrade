@@ -14,6 +14,7 @@ const Update = () => {
     const resp = await  updateUserStrengthsWeaknesses({strength,weakness,id});
        //* local storage
     localStorage.setItem("user",JSON.stringify(resp.user))
+    // console.log("UPDATE",resp.user)
     if(resp.status!==200){
       toast.error(resp.message);
     }else{

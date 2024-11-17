@@ -17,6 +17,7 @@ export default function Home() {
       
       {session.data ? (
         <div>
+          <p>{JSON.stringify(session.data)}</p>
           <Userprofile/>
         </div>
       ) : (
