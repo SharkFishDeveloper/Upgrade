@@ -1,4 +1,5 @@
 import DailyGoals from "./DailyGoals";
+import LongTermGoal from "./LongTermGoal";
 import Skillarea from "./Skillarea";
 
 const HeroSection = () => {
@@ -10,11 +11,14 @@ const HeroSection = () => {
         <div className="flex-1">
           <Skillarea />
         </div>
-
-        {/* DailyGoals Component */}
         <div className="flex-1">
           <DailyGoals />
         </div>
+
+        <div>
+          <LongTermGoal/>
+        </div>
+
       </div>
     </div>
   );

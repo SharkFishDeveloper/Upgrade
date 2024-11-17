@@ -1,6 +1,8 @@
 interface LongTermObjective {
-    name: string;
-    deadline: string;
-    score: number;
+  id: number;
+  name: string;
+  deadline: string;
+  score: number;
+  profileId: number;
   }
   export default LongTermObjective;

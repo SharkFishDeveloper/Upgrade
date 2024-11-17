@@ -21,7 +21,7 @@ export async function deleteSkill({userId,skillId}:{userId:number,skillId:number
         });
         return { message: "Deleted skill successfully", status: 200 };
     } catch (error) {
-        // console.log(error)
+        console.log(error)
         return { message: "Try again after some time", status: 300 };
     }
 }
