@@ -1,7 +1,10 @@
 interface SkillArea {
-    name: string;
-    total_Points: number;
-    week: number;
-    level: number;
+  id: number;
+  name: string;
+  dailyPoints: number;
+  days: number;
+  level: number;
+  profileId: number;
+  streak: number;
   }  
   export default SkillArea;

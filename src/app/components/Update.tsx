@@ -8,7 +8,7 @@ const Update = () => {
   const [strength, setStrength] = useState("");
   const [weakness, setWeakness] = useState("");
 
-  const handleSubmit =async (e) => {
+  const handleSubmit =async (e:React.FormEvent) => {
     e.preventDefault();
     const id = session.data?.user.id as string;
     const resp = await  updateUserStrengthsWeaknesses({strength,weakness,id});

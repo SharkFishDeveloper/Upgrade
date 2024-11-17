@@ -30,7 +30,6 @@ const handler = NextAuth({
 
         if (!existingUser) {
           if (userEmail) {
-            // Create new user with a profile
             const newUser = await prisma.user.create({
               data: {
                 email: userEmail,
@@ -94,7 +93,7 @@ const handler = NextAuth({
                  include:{
                   singleGoal: {
                     include: {
-                      tasks: true, // Ensure tasks are included
+                      tasks: true,
                     },
                   },
                  }

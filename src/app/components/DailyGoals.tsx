@@ -20,7 +20,9 @@ const DailyGoals = () => {
     let user = localStorage.getItem("user");
     if (user) {
       user = JSON.parse(user);
+      //@ts-ignore
       if (user && user.profile.dailyGoals) {
+          //@ts-ignore
         const daily_goals = user?.profile?.dailyGoals;
         setDailygoals(daily_goals);
       } else {

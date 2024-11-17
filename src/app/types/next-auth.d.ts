@@ -22,8 +22,9 @@ declare module "next-auth" {
     skillAreas: { 
       id: number;
       name: string;
-      totalPoints: number;
-      week: number;
+      dailyPoints: number;
+      days: number;
+      streak: number;
       level: number;
     }[]; // Reflecting the SkillArea model structure
     goals: { 

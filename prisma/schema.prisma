@@ -42,8 +42,9 @@ model DailyGoal {
 model SkillArea {
   id          Int      @id @default(autoincrement())
   name        String
-  totalPoints Int
-  week        Int      @default(0)
+  dailyPoints Int
+  streak      Int      @default(0)
+  days        Int      @default(0)
   level       Int      @default(0)
   profileId   Int
   profile     Profile  @relation(fields: [profileId], references: [id])
