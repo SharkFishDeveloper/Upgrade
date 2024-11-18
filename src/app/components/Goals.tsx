@@ -5,8 +5,39 @@ import { useEffect, useState } from "react";
 import { addGoal } from "../backend/addGoal";
 import toast from "react-hot-toast";
 
+
+
+interface Task {
+  id: number;
+  name: string;
+  done: boolean;
+  deadline: string; // Use Date if converting to a Date object
+  goalId: number;
+}
+
+interface SingleGoal {
+  id: number;
+  name: string;
+  score: number;
+  penalty: number;
+  profileId: number;
+  tasks: Task[];
+}
+
+
+
+interface GoalsData {
+  id: number;
+  profileId: number;
+  singleGoal: SingleGoal[];
+}
+
+
+
 const Goals = () => {
   const session = useSession();
+  const [all_goals,setGoals] = useState<GoalsData[]>([]);
+
   const [goal, setGoal] = useState({
     name: "",
     score: 0,
@@ -14,14 +45,8 @@ const Goals = () => {
     tasks: [{ name: "", deadline: "" }],
   });
 
-  const [allgoals, setAllgoals] = useState<
-    {
-      name: string;
-      score: number;
-      penalty: number;
-      tasks: { name: string; deadline: string }[];
-    }[]
-  >([]);
+
+
 
   const handleGoalChange = (field: string, value: string | number) => {
     setGoal({ ...goal, [field]: value });
@@ -29,6 +54,7 @@ const Goals = () => {
 
   const handleTaskChange = (taskIndex: number, field: string, value: string) => {
     const updatedTasks = [...goal.tasks];
+    //@ts-ignore
     updatedTasks[taskIndex][field] = value;
     setGoal({ ...goal, tasks: updatedTasks });
   };
@@ -61,14 +87,42 @@ const Goals = () => {
     } else {
       toast.error("User ID or goal is missing");
     }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    window.location.reload(); 
+
+
+
   };
 
   const getGoals = () => {
     const user = localStorage.getItem("user");
     const parsedUser = user ? JSON.parse(user) : null;
     const goals = parsedUser?.profile?.goals;
-    setAllgoals(goals || []);
+    setGoals(goals);
   };
+
+  const [expandedGoalId, setExpandedGoalId] = useState<number | null>(null);
+
+  // Toggle goal expansion
+  const toggleGoalDetails = (goalId: number) => {
+    if (expandedGoalId === goalId) {
+      setExpandedGoalId(null); // Collapse if it's already expanded
+    } else {
+      setExpandedGoalId(goalId); // Expand the clicked goal
+    }
+  };
+
+  // Toggle task expansion
+  const [expandedTaskId, setExpandedTaskId] = useState<number | null>(null);
+  const toggleTaskDetails = (taskId: number) => {
+    if (expandedTaskId === taskId) {
+      setExpandedTaskId(null); // Collapse if it's already expanded
+    } else {
+      setExpandedTaskId(taskId); // Expand the clicked task
+    }
+  };
+
+
 
   useEffect(() => {
     getGoals();
@@ -78,6 +132,65 @@ const Goals = () => {
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md">
      <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md">
     {/* ADD UI FOR GOALS */}
+       
+   <div>
+      {all_goals && all_goals.length > 0 ? (
+        all_goals.map((goalData, index) => (
+          <div key={index}>
+            {goalData.singleGoal && goalData.singleGoal.length > 0 ? (
+              goalData.singleGoal.map((goal, goalIndex) => (
+                <div
+                  key={goalIndex}
+                  className="bg-gray-800 p-4 text-white mb-4 cursor-pointer"
+                  onClick={() => toggleGoalDetails(goal.id)} // Handle goal tile click
+                >
+                  <h3 className="text-xl">{goal.name}</h3>
+                  <p>Score: {goal.score}</p>
+                  <p>Penalty: {goal.penalty}</p>
+
+                  {/* Show detailed information if goal is expanded */}
+                  {expandedGoalId === goal.id && (
+                    <div className="mt-2">
+                      <p>Profile ID: {goal.profileId}</p>
+                      {goal.tasks && goal.tasks.length > 0 ? (
+                        goal.tasks.map((task, taskIndex) => (
+                          <div
+                            key={taskIndex}
+                            className="bg-gray-700 p-2 mt-2 cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent goal tile expansion on task click
+                              toggleTaskDetails(task.id); // Toggle task details
+                            }}
+                          >
+                            <p>Task: {task.name}</p>
+                            <p>Deadline: {task.deadline}</p>
+
+                            {/* Show task details if task is expanded */}
+                            {expandedTaskId === task.id && (
+                              <div className="mt-2">
+                                <p>Task ID: {task.id}</p>
+                                <p>Done: {task.done ? 'Yes' : 'No'}</p>
+                              </div>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <p>No tasks for this goal</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p>No single goals available</p>
+            )}
+          </div>
+        ))
+      ) : (
+        <p>Nothing to show</p>
+      )}
+    </div>
+
     </div>
 
 
