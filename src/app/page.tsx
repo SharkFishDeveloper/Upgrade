@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import Userprofile from "./components/Userprofile";
 import { useEffect } from "react";
-import Calender from "./components/Calender";
+import MyCalendar from "./components/MyCalender";
+
 
 export default function Home() {
   const session = useSession();
@@ -18,7 +19,7 @@ export default function Home() {
     <div className="flex min-h-screen items-center justify-center bg-white text-black">
       {session.data ? (
         <div>
-          <Calender/>
+          <MyCalendar/>
           <Userprofile />
         </div>
       ) : (

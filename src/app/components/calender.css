@@ -1,0 +1,29 @@
+.calendar-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .days-row {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .day-column {
+    width: 20%;
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  .day-header {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .time-slot {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+  }
+  
