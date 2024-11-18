@@ -4,6 +4,8 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { addGoal } from "../backend/addGoal";
 import toast from "react-hot-toast";
+import { goalTaskDone } from "../backend/goalTaskDone";
+import { deleteGoal } from "../backend/deleteGoal";
 
 
 
@@ -122,8 +124,68 @@ const Goals = () => {
     }
   };
 
+ const handleTaskDone = async (goalId:number,taskId:number,deadline:string,score:number,penalty:number)=>{
+  const userIdString = session.data?.user.id;
+  const userId = parseInt(userIdString as string)
+
+ if(userId){
+  const resp = await goalTaskDone({userId,goalId,taskId,deadline,score,penalty});
+  if (resp.status !== 200) {
+    toast.error(resp.message);
+  } else {
+    toast.success(resp.message);
+  }
+  const user = localStorage.getItem("user");
+  const parsedUser:GoalsData = user ?  JSON.parse(user) : null;
+  console.log(parsedUser)
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  window.location.reload(); 
+
+  // Iterate through goals, singleGoal, and tasks to find the specific task to update
+  // parsedUser.profile.goals.forEach((goal) => {
+  //   goal.singleGoal.forEach((task) => {
+  //     task.tasks.forEach((singleTask, index) => {
+  //       if (singleTask.id === taskId && index === taskIndex) {
+  //         // Update the task's `done` field to true
+  //         singleTask.done = true;
+  //       }
+  //     });
+  //   });
+  // });
+
+  // Save the updated user object back to localStorage
+  if (!parsedUser) {
+    return;
+  }
 
 
+  localStorage.setItem("user", JSON.stringify(parsedUser));
+ }else{
+  toast.error("Please sign in")
+ }
+ }
+
+ const handleDeleteGoal = async (goalId:number)=>{
+  const userIdString = session.data?.user.id;
+  const userId = parseInt(userIdString as string)
+  console.log(goalId,userId)
+  if(userId){
+    const resp = await deleteGoal({goalId,userId});
+    if (resp.status !== 200) {
+      toast.error(resp.message);
+    } else {
+      toast.success(resp.message);
+      // const user = localStorage.getItem("user");
+      // const parsedUser:GoalsData = user ?  JSON.parse(user) : null;
+      // console.log(goalId,userId)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      window.location.reload(); 
+    }
+  }else{
+    toast.error("Please sign in")
+  }
+ }
+  
   useEffect(() => {
     getGoals();
   }, []);
@@ -133,63 +195,89 @@ const Goals = () => {
      <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md">
     {/* ADD UI FOR GOALS */}
        
-   <div>
-      {all_goals && all_goals.length > 0 ? (
-        all_goals.map((goalData, index) => (
-          <div key={index}>
-            {goalData.singleGoal && goalData.singleGoal.length > 0 ? (
-              goalData.singleGoal.map((goal, goalIndex) => (
-                <div
-                  key={goalIndex}
-                  className="bg-gray-800 p-4 text-white mb-4 cursor-pointer"
-                  onClick={() => toggleGoalDetails(goal.id)} // Handle goal tile click
-                >
-                  <h3 className="text-xl">{goal.name}</h3>
-                  <p>Score: {goal.score}</p>
-                  <p>Penalty: {goal.penalty}</p>
+    <div>
+  {all_goals && all_goals.length > 0 ? (
+    all_goals.map((goalData, index) => (
+      <div key={index}>
+        {goalData.singleGoal && goalData.singleGoal.length > 0 ? (
+          goalData.singleGoal.map((goal, goalIndex) => (
+            <div
+              key={goalIndex}
+              className="bg-gray-800 p-4 text-white mb-4 cursor-pointer"
+              onClick={() => toggleGoalDetails(goal.id)} // Handle goal tile click
+            >
+              <h3 className="text-xl">{goal.name}</h3>
+              <p>Score: {goal.score}</p>
+              <p>Penalty: {goal.penalty}</p>
 
-                  {/* Show detailed information if goal is expanded */}
-                  {expandedGoalId === goal.id && (
-                    <div className="mt-2">
-                      <p>Profile ID: {goal.profileId}</p>
-                      {goal.tasks && goal.tasks.length > 0 ? (
-                        goal.tasks.map((task, taskIndex) => (
-                          <div
-                            key={taskIndex}
-                            className="bg-gray-700 p-2 mt-2 cursor-pointer"
-                            onClick={(e) => {
-                              e.stopPropagation(); // Prevent goal tile expansion on task click
-                              toggleTaskDetails(task.id); // Toggle task details
-                            }}
+              {/* Show detailed information if goal is expanded */}
+              {expandedGoalId === goal.id && (
+                <div className="mt-2">
+                  <p>Profile ID: {goal.profileId}</p>
+
+
+                  <button className="h-[3rem] w-[4rem] bg-red-500" onClick={()=>handleDeleteGoal(goal.id)}>Delete</button>
+
+
+                  {goal.tasks && goal.tasks.length > 0 ? (
+                    goal.tasks.map((task, taskIndex) => {
+                      // Check if the task's deadline has passed
+                      const taskDeadline = new Date(task.deadline);
+                      const currentDate = new Date();
+                      const isDeadlinePassed = taskDeadline < currentDate;
+
+                      return (
+                        <div
+                          key={taskIndex}
+                          className="bg-gray-700 p-2 mt-2 cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent goal tile expansion on task click
+                            toggleTaskDetails(task.id); // Toggle task details
+                          }}
+                        >
+                          <p>Task: {task.name}</p>
+                          <p>Deadline: {task.deadline}</p>
+
+                          {/* Button indicating deadline status */}
+                          <button onClick={()=>handleTaskDone(goal.id,task.id,task.deadline,goal.score,goal.penalty)}
+                            className={`mt-2 px-4 py-2 rounded text-white ${
+                              isDeadlinePassed ? 'bg-red-600' : 'bg-green-600'
+                            }`}
                           >
-                            <p>Task: {task.name}</p>
-                            <p>Deadline: {task.deadline}</p>
+                            {isDeadlinePassed ? 'Done' : 'Done'}
+                          </button>
 
-                            {/* Show task details if task is expanded */}
-                            {expandedTaskId === task.id && (
-                              <div className="mt-2">
-                                <p>Task ID: {task.id}</p>
-                                <p>Done: {task.done ? 'Yes' : 'No'}</p>
-                              </div>
-                            )}
-                          </div>
-                        ))
-                      ) : (
-                        <p>No tasks for this goal</p>
-                      )}
-                    </div>
+                          {/* Show task details if task is expanded */}
+                          {expandedTaskId === task.id && (
+                            <div className="mt-2">
+                              <p>Task ID: {task.id}</p>
+                              <p>Done: {task.done ? 'Yes' : 'No'}</p>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <p>No tasks for this goal</p>
                   )}
                 </div>
-              ))
-            ) : (
-              <p>No single goals available</p>
-            )}
-          </div>
-        ))
-      ) : (
-        <p>Nothing to show</p>
-      )}
-    </div>
+              )}
+              {/* Delete button for the goal */}
+
+            </div>
+          ))
+        ) : (
+          <p>No single goals available</p>
+        )}
+      </div>
+    ))
+  ) : (
+    <p>Nothing to show</p>
+  )}
+</div>
+
+
+
 
     </div>
 

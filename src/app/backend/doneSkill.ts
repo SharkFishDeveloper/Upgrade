@@ -4,7 +4,7 @@ import prisma from "../../../lib/prisma"
 
 export async function doneSkill({userId,skillId,score}:{userId:number,skillId:number,score:number}) {
     try {
-        const resp = await prisma.user.update({
+        await prisma.user.update({
             where:{id:userId},
             data:{
                 profile:{
@@ -30,6 +30,7 @@ export async function doneSkill({userId,skillId,score}:{userId:number,skillId:nu
         })
         return { message: "Streak maintained", status: 200 };  
     } catch (error) {
+        console.log(error);
         return { message: "Try again after some time", status: 300 };  
     }
 }
