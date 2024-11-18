@@ -13,6 +13,28 @@ model User {
   name      String
   email     String    @unique
   profile   Profile?
+  calender  Calender?
+}
+
+model Calender{
+  id              Int       @id @default(autoincrement()) 
+  manyDates       DateObject[]
+  user            User      @relation(fields: [id], references: [id])
+}
+
+model DateObject{
+  id            Int       @id @default(autoincrement())  
+  dateId        String    @unique 
+  singleDates   Date[]
+  calender      Calender      @relation(fields: [id], references: [id])
+}
+
+model Date{
+   id       Int       @id @default(autoincrement()) 
+   category String
+   taskName String
+   time     String
+   dateObject DateObject  @relation(fields: [id], references: [id])
 }
 
 model Profile {
